@@ -1,18 +1,26 @@
 #include <cstdio>
 #include <cstring>
+#include <vector>
 
-#define PROTOCOLO_VERSAO 1
+#define PROTOCOL_VERSION 1
+
+struct Robot
+{
+    int id;
+    float x, y, w,
+    	vx, vy, vw;	
+};
 
 int main()
 {
 	// Pre setup
-	char protocolo[64];
-	int versao;
-	scanf("%s %d", protocolo, &versao);
-	if (strcmp(protocolo, "ROBOIME_AI_PROTOCOL_VERSION") == 0 && versao == PROTOCOLO_VERSAO)
-		printf("COMPATIBLE %d\n", PROTOCOLO_VERSAO);
+	char protocol[64];
+	int version;
+	scanf("%s %d", protocol, &version);
+	if (strcmp(protocol, "ROBOIME_AI_PROTOCOL_VERSION") == 0 && version == PROTOCOL_VERSION)
+		printf("COMPATIBLE %d\n", PROTOCOL_VERSION);
 	else
-		printf("NON_COMPATIBLE %d\n", PROTOCOLO_VERSAO);
+		printf("NON_COMPATIBLE %d\n", PROTOCOL_VERSION);
 
 	// Setup
 	float field_width, 
@@ -44,26 +52,27 @@ int main()
     		num_robots,
     		opponent_num_robots;
 
+    	std::vector<Robot> robots,
+    					   opponent_robots;
+
     	scanf("%c %f", &ref_state, &timestamp);
     	scanf("%f %f %f %f", &ball_x, &ball_y, &ball_vx, &ball_vy);
     	scanf("%d %d", &id_goalkeeper, &num_robots);
 
     	for(int i = 0; i < num_robots; i++)
     	{
-    		int robot_id;
-    		float robot_x, robot_y, robot_w,
-    			  robot_vx, robot_vy, robot_vw;
-    		scanf("%d %f %f %f %f %f %f", &robot_x, &robot_y, &robot_w, &robot_vx, &robot_vy, &robot_vw);
+    		Robot r;
+    		scanf("%d %f %f %f %f %f %f", &r.id, &r.x, &r.y, &r.w, &r.vx, &r.vy, &r.vw);
+    		robots.push_back(r);
     	}
 
     	scanf("%d", &opponent_num_robots);
 
     	for(int i = 0; i < opponent_num_robots; i++)
     	{
-    		int robot_id;
-    		float robot_x, robot_y, robot_w,
-    			  robot_vx, robot_vy, robot_vw;
-    		scanf("%d %f %f %f %f %f %f", &robot_x, &robot_y, &robot_w, &robot_vx, &robot_vy, &robot_vw);
+    		Robot r;
+    		scanf("%d %f %f %f %f %f %f", &r.id, &r.x, &r.y, &r.w, &r.vx, &r.vy, &r.vw);
+    		opponent_robots.push_back(r);
     	}
     }
 
