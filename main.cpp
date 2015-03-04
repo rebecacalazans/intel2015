@@ -115,9 +115,16 @@ int main()
 
     printf("%d K\n", id_attacker);
 
+    float spacing = field_height / (num_robots-1);
+    int def_robots = 0;
     for (int i = 0; i < num_robots; i++)
+    {
       if (robots[i].id != id_goalkeeper && robots[i].id != id_attacker)
-          printf("%d D %f %f\n", robots[i].id, -field_width / 4, 0.0f);
+      {
+        def_robots++;
+        printf("%d D %f %f\n", robots[i].id, -field_width / 2 + defense_radius, field_height / 2 - spacing * def_robots);
+      }
+    }
 
 #ifdef DEBUG
     return 1;
