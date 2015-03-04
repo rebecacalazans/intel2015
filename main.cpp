@@ -61,9 +61,17 @@ int main()
     std::vector<Robot> robots,
       opponent_robots;
 
-    scanf("%c %f", &ref_state, &timestamp);
+    scanf(" %c %f", &ref_state, &timestamp);
     scanf("%f %f %f %f", &ball_x, &ball_y, &ball_vx, &ball_vy);
     scanf("%d %d", &id_goalkeeper, &num_robots);
+
+    /*
+    printf("ref: %c\n", ref_state);
+    printf("timestamp: %f\n", timestamp);
+    printf("ball: %f %f %f %f\n", ball_x, ball_y, ball_vx, ball_vy);
+    printf("id_goalkeeper: %d\n", id_goalkeeper);
+    printf("num_robots: %d\n", num_robots);
+    */
 
     for (int i = 0; i < num_robots; i++)
     {
@@ -71,6 +79,13 @@ int main()
       scanf("%d %f %f %f %f %f %f", &r.id, &r.x, &r.y, &r.w, &r.vx, &r.vy, &r.vw);
       robots.push_back(r);
     }
+
+    /*
+    printf("robots [%zd]: ", robots.size());
+    for (unsigned int i = 0; i < robots.size(); ++i)
+      printf("%d ", robots[i].id);
+    printf("\n");
+    */
 
     scanf("%d", &opponent_num_robots);
 
@@ -83,7 +98,7 @@ int main()
 
     // Estratégia que envia ao jogador mais próximo da bola a ordem de atacar e aos outros jogadores a ordem de defender no centro da área
     float dist_min = 999999999;
-    int id_min;
+    int id_attacker;
     printf("%d D %f %f\n", id_goalkeeper, -field_width / 2, 0.0f);
     for (int i = 0; i < num_robots; i++)
     {
@@ -93,16 +108,20 @@ int main()
         if (dist < dist_min)
         {
           dist_min = dist;
-          id_min = robots[i].id;
+          id_attacker = robots[i].id;
         }
       }
     }
 
-    printf("%d K\n", id_min);
+    printf("%d K\n", id_attacker);
 
     for (int i = 0; i < num_robots; i++)
-      if (robots[i].id != id_goalkeeper && robots[i].id != id_min)
+      if (robots[i].id != id_goalkeeper && robots[i].id != id_attacker)
           printf("%d D %f %f\n", robots[i].id, -field_width / 4, 0.0f);
+
+#ifdef DEBUG
+    return 1;
+#endif
   }
 
   return 0;
