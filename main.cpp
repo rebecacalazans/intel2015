@@ -106,27 +106,12 @@ int main()
     scanf("%f %f %f %f", &ball_x, &ball_y, &ball_vx, &ball_vy);
     scanf("%d %d", &id_goalkeeper, &num_robots);
 
-    /*
-    printf("ref: %c\n", ref_state);
-    printf("timestamp: %f\n", timestamp);
-    printf("ball: %f %f %f %f\n", ball_x, ball_y, ball_vx, ball_vy);
-    printf("id_goalkeeper: %d\n", id_goalkeeper);
-    printf("num_robots: %d\n", num_robots);
-    */
-
     for (int i = 0; i < num_robots; i++)
     {
       Robot r;
       scanf("%d %f %f %f %f %f %f", &r.id, &r.x, &r.y, &r.w, &r.vx, &r.vy, &r.vw);
       robots.push_back(r);
     }
-
-    /*
-    printf("robots [%zd]: ", robots.size());
-    for (unsigned int i = 0; i < robots.size(); ++i)
-      printf("%d ", robots[i].id);
-    printf("\n");
-    */
 
     scanf("%d", &opponent_num_robots);
 
@@ -137,50 +122,83 @@ int main()
       opponent_robots.push_back(r);
     }
 
-    // Estratégia que envia ao jogador mais próximo da bola a ordem de atacar e aos outros jogadores a ordem de defender no centro da área
-    float dist_min = 999999999;
-    int id_attacker;
-    printf("%d D %f %f\n", id_goalkeeper, -field_width / 2, 0.0f);
-    for (int i = 0; i < num_robots; i++)
+    printf("%d D %f %f\n", id_goalkeeper, field_width / 2, 0.0f);
+
+    if(ref_state == 'N')
     {
-      if (robots[i].id != id_goalkeeper)
+      // Estratégia que envia ao jogador mais próximo da bola a ordem de atacar e aos outros jogadores a ordem de defender no centro da área
+      float dist_min = 999999999;
+      int id_attacker;
+      for (int i = 0; i < num_robots; i++)
       {
-        float dist = dist_point(robots[i], ball_x, ball_y);
-        if (dist < dist_min)
+        if (robots[i].id != id_goalkeeper)
         {
-          dist_min = dist;
-          id_attacker = robots[i].id;
+          float dist = dist_point(robots[i], ball_x, ball_y);
+          if (dist < dist_min)
+          {
+            dist_min = dist;
+            id_attacker = robots[i].id;
+          }
+        }
+      }
+
+      printf("%d K\n", id_attacker);
+
+
+      // Ponto em que a reta do gol até a bola intercepta a reta de defesa
+      Point interPoint;
+      bool isIntersect = line_intersect({-field_width / 2, 0.0f}, {ball_x, ball_y},
+          {-field_width / 2 + defense_radius, field_height / 2}, {-field_width / 2 + defense_radius, -field_height / 2},
+          &interPoint);
+
+      // TODO (rebeca - 20150304): Separar defesa defender linha em função
+      float spacing = field_height / (num_robots-1);
+      int def_robots = 0;
+      for (int i = 0; i < num_robots; i++)
+      {
+        if (robots[i].id != id_goalkeeper && robots[i].id != id_attacker)
+        {
+          def_robots++;
+          printf("%d D %f %f\n",
+              robots[i].id, -field_width / 2 + defense_radius,
+              field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y : 0.0f));
         }
       }
     }
-
-    printf("%d K\n", id_attacker);
-
-
-    // Ponto em que a reta do gol até a bola intercepta a reta de defesa
-    Point interPoint;
-    bool isIntersect = line_intersect({-field_width / 2, 0.0f}, {ball_x, ball_y},
-                                      {-field_width / 2 + defense_radius, field_height / 2}, {-field_width / 2 + defense_radius, -field_height / 2},
-                                      &interPoint);
-
-    /*
-    if (isIntersect)
-      printf("intersect: %f %f\n", interPoint.x, interPoint.y);
-    */
-
-    float spacing = field_height / (num_robots-1);
-    int def_robots = 0;
-    for (int i = 0; i < num_robots; i++)
+    else if(ref_state == 'S')
     {
-      if (robots[i].id != id_goalkeeper && robots[i].id != id_attacker)
+      // Ponto em que a reta do gol até a bola intercepta a reta de defesa
+      Point interPoint;
+      bool isIntersect = line_intersect({-field_width / 2, 0.0f}, {ball_x, ball_y},
+          {-field_width / 2 + defense_radius, field_height / 2}, {-field_width / 2 + defense_radius, -field_height / 2},
+          &interPoint);
+      int num_robots_center = 3;
+      float spacing = field_height / (num_robots-num_robots_center);
+      int c_robots = 0, def_robots = 0;
+
+      for(int i = 0; i < num_robots; i++)
       {
-        def_robots++;
-        printf("%d D %f %f\n",
-               robots[i].id, -field_width / 2 + defense_radius,
-               field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y : 0.0f));
+        if (robots[i].id == id_goalkeeper)
+          continue;
+
+        if(c_robots < num_robots_center)
+        {
+          Point pos_final = {-field_width / 2 - ball_x, 0.0f - ball_y};
+          pos_final = normalize(pos_final);
+          pos_final = rotate(pos_final, -60 + 60 * c_robots);
+          printf("%d D %f %f\n",
+                robots[i].id, (pos_final.x + ball_x) * center_circle_radius, (pos_final.y + ball_y) * center_circle_radius);
+          c_robots++;
+        }
+        else
+        {
+          def_robots++;
+          printf("%d D %f %f\n",
+              robots[i].id, -field_width / 2 + defense_radius,
+              field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y : 0.0f));
+        }
       }
     }
-
 #ifdef DEBUG
     return 1;
 #endif
