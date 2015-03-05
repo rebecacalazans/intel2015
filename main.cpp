@@ -90,7 +90,11 @@ int main()
       &penalty_spot_from_field_line_dist,
       &penalty_line_from_spot_dist);
 
+#ifdef DEBUG
+  while (!feof(stdin))
+#else
   while (true)
+#endif
   {
     char ref_state;
     float timestamp;
@@ -122,7 +126,7 @@ int main()
       opponent_robots.push_back(r);
     }
 
-    printf("%d D %f %f\n", id_goalkeeper, field_width / 2, 0.0f);
+    printf("%d D %f %f\n", id_goalkeeper, -field_width / 2, 0.0f);
 
     if(ref_state == 'N')
     {
@@ -199,9 +203,41 @@ int main()
         }
       }
     }
-#ifdef DEBUG
-    return 1;
-#endif
+    else if(ref_state == 'i')
+    {
+      Point interPoint;
+      bool isIntersect = line_intersect({-field_width / 2, 0.0f}, {ball_x, ball_y},
+          {-field_width / 2 + defense_radius, field_height / 2}, {-field_width / 2 + defense_radius, -field_height / 2},
+          &interPoint);
+      float spacing = field_height / (num_robots - 2);
+      int def_robots = 0;
+      int used_robots = 0;
+      int id_receiver;
+      for (int i = 0; i < num_robots; i++)
+      {
+        if (robots[i].id == id_goalkeeper)
+          continue;
+
+        else if(used_robots == 0)
+        {
+          id_receiver = robots[i].id;
+          printf("%d A %f %f\n", id_receiver, field_width / 4, 0.0f);
+          used_robots++;
+        }
+        else if(used_robots == 1)
+        {
+          printf("%d P %d\n", robots[i].id, id_receiver);
+          used_robots++;
+        }
+        else
+        {
+          def_robots++;
+          printf("%d D %f %f\n",
+              robots[i].id, -field_width / 2 + defense_radius,
+              field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y : 0.0f));
+        }
+      }
+    }
   }
 
   return 0;
