@@ -5,6 +5,11 @@
 
 #define PROTOCOL_VERSION 1
 
+struct Point
+{
+  float x, y;
+};
+
 struct Robot
 {
   int id;
@@ -15,6 +20,24 @@ struct Robot
 float dist_point(Robot a, float x, float y)
 {
   return sqrt( (a.x - x) * (a.x - x) + (a.y - y)*(a.y - y) );
+}
+
+// TODO (naum-20150304): Verificar se essa função está certa!
+bool line_intersect(Point a1, Point a2, Point b1, Point b2, Point* ret)
+{
+  float dy1 = a2.y - a1.y,
+        dx1 = a2.x - a1.x,
+        c1  = a2.x * a1.y - a1.x * a2.y;
+  float dy2 = b2.y - b1.y,
+        dx2 = b2.x - b1.x,
+        c2  = b2.x * b1.y - b1.x * b2.y;
+
+  float denom = dy1 * dx2 - dx1 * dy2;
+  if (std::abs(denom) < 0.001f)
+    return false;
+
+  *ret = Point {(dx1 * c2 - dx2 * c1) / denom, (dy1 * c2 - dy2 * c1) / denom};
+  return true;
 }
 
 int main()
@@ -115,6 +138,18 @@ int main()
 
     printf("%d K\n", id_attacker);
 
+
+    // Ponto em que a reta do gol até a bola intercepta a reta de defesa
+    Point interPoint;
+    bool isIntersect = line_intersect({-field_width / 2, 0.0f}, {ball_x, ball_y},
+                                      {-field_width / 2 + defense_radius, field_height / 2}, {-field_width / 2 + defense_radius, -field_height / 2},
+                                      &interPoint);
+
+    /*
+    if (isIntersect)
+      printf("intersect: %f %f\n", interPoint.x, interPoint.y);
+    */
+
     float spacing = field_height / (num_robots-1);
     int def_robots = 0;
     for (int i = 0; i < num_robots; i++)
@@ -122,7 +157,9 @@ int main()
       if (robots[i].id != id_goalkeeper && robots[i].id != id_attacker)
       {
         def_robots++;
-        printf("%d D %f %f\n", robots[i].id, -field_width / 2 + defense_radius, field_height / 2 - spacing * def_robots);
+        printf("%d D %f %f\n",
+               robots[i].id, -field_width / 2 + defense_radius,
+               field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y : 0.0f));
       }
     }
 
