@@ -17,9 +17,27 @@ struct Robot
         vx, vy, vw;
 };
 
+float magnitude(Point p)
+{
+  return std::sqrt(p.x * p.x + p.y * p.y);
+}
+
+Point normalize(Point p)
+{
+  float mag = magnitude(p);
+  return {p.x / mag, p.y / mag};
+}
+
+Point rotate(Point p, float angle)
+{
+  float c = std::cos(angle * M_PI / 180.0),
+        s = std::sin(angle * M_PI / 180.0);
+  return {p.x * c + p.y * s, p.y * c - p.x * s};
+}
+
 float dist_point(Robot a, float x, float y)
 {
-  return sqrt( (a.x - x) * (a.x - x) + (a.y - y)*(a.y - y) );
+  return std::sqrt( (a.x - x) * (a.x - x) + (a.y - y)*(a.y - y) );
 }
 
 // TODO (naum-20150304): Verificar se essa função está certa!
