@@ -1,5 +1,5 @@
 EXEC = intel.out
-SRCS = main.cpp utils/geom.cpp
+SRCS = main.cpp utils/point.cpp
 FLAGS = -std=c++11
 
 debug: $(SRCS)

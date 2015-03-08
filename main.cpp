@@ -93,7 +93,7 @@ int main()
       {
         if (robots[i].id != id_goalkeeper)
         {
-          float dist = dist_point({robots[i].x, robots[i].y}, ball_x, ball_y);
+          float dist = dist_point({robots[i].x, robots[i].y}, {ball_x, ball_y});
           if (dist < dist_min)
           {
             dist_min = dist;
@@ -121,7 +121,7 @@ int main()
           def_robots++;
           printf("%d D %f %f\n",
               robots[i].id, -field_width / 2 + defense_radius,
-              field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y : 0.0f));
+              field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y() : 0.0f));
         }
       }
     }
@@ -144,10 +144,10 @@ int main()
         if(c_robots < num_robots_center)
         {
           Point pos_final = {-field_width / 2 - ball_x, 0.0f - ball_y};
-          pos_final = normalize(pos_final);
-          pos_final = rotate(pos_final, -60 + 60 * c_robots);
+          pos_final.normalize();
+          pos_final.rotate(-60 + 60 * c_robots);
           printf("%d D %f %f\n",
-                robots[i].id, (pos_final.x + ball_x) * center_circle_radius, (pos_final.y + ball_y) * center_circle_radius);
+                robots[i].id, (pos_final.x() + ball_x) * center_circle_radius, (pos_final.y() + ball_y) * center_circle_radius);
           c_robots++;
         }
         else
@@ -155,7 +155,7 @@ int main()
           def_robots++;
           printf("%d D %f %f\n",
               robots[i].id, -field_width / 2 + defense_radius,
-              field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y : 0.0f));
+              field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y() : 0.0f));
         }
       }
     }
@@ -190,7 +190,7 @@ int main()
           def_robots++;
           printf("%d D %f %f\n",
               robots[i].id, -field_width / 2 + defense_radius,
-              field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y : 0.0f));
+              field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y() : 0.0f));
         }
       }
     }
