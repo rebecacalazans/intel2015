@@ -5,6 +5,10 @@ Transition(State* from, State* to, condition_t condition) :
   from_{from}, to_{to}, condition_{condition}
 {}
 
+Transition::
+~Transition()
+{}
+
 const State* Transition::
 from() const
 {
@@ -36,6 +40,10 @@ Machine(State* initial_state):
   transitions_{}
 {}
 
+Machine::
+~Machine()
+{}
+
 void Machine::
 addTransition(Transition transition)
 {
@@ -51,7 +59,7 @@ reset()
 void Machine::
 step()
 {
-  for (int i = 0; i < transitions_.size(); i++)
+  for (unsigned int i = 0; i < transitions_.size(); i++)
   {
     if (current_state_ == transitions_[i].from() &&
         transitions_[i].condition())
