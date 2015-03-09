@@ -46,11 +46,7 @@ int main()
       &penalty_spot_from_field_line_dist,
       &penalty_line_from_spot_dist);
 
-#ifdef DEBUG
-  while (!feof(stdin))
-#else
   while (true)
-#endif
   {
     char ref_state;
     float timestamp;
@@ -62,7 +58,12 @@ int main()
     std::vector<Robot> robots,
       opponent_robots;
 
+#ifdef DEBUG
+    if (scanf(" %c %f", &ref_state, &timestamp) == EOF)
+      break;
+#else
     scanf(" %c %f", &ref_state, &timestamp);
+#endif
     scanf("%f %f %f %f", &ball_x, &ball_y, &ball_vx, &ball_vy);
     scanf("%d %d", &id_goalkeeper, &num_robots);
 
