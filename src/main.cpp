@@ -3,16 +3,10 @@
 #include <vector>
 #include <cmath>
 
+#include "base/robot.h"
 #include "utils/geom.h"
 
 #define PROTOCOL_VERSION 1
-
-struct Robot
-{
-  int id;
-  float x, y, w,
-        vx, vy, vw;
-};
 
 int main()
 {
@@ -69,8 +63,12 @@ int main()
 
     for (int i = 0; i < num_robots; i++)
     {
+      int id;
+      float x, y, w, vx, vy, vw;
+      scanf("%d %f %f %f %f %f %f", &id, &x, &y, &w, &vx, &vy, &vw);
+
       Robot r;
-      scanf("%d %f %f %f %f %f %f", &r.id, &r.x, &r.y, &r.w, &r.vx, &r.vy, &r.vw);
+      r.setup(id, x, y, w, vx, vy, vw);
       robots.push_back(r);
     }
 
@@ -78,8 +76,11 @@ int main()
 
     for (int i = 0; i < opponent_num_robots; i++)
     {
+      int id;
+      float x, y, w, vx, vy, vw;
+      scanf("%d %f %f %f %f %f %f", &id, &x, &y, &w, &vx, &vy, &vw);
       Robot r;
-      scanf("%d %f %f %f %f %f %f", &r.id, &r.x, &r.y, &r.w, &r.vx, &r.vy, &r.vw);
+      r.setup(id, x, y, w, vx, vy, vw);
       opponent_robots.push_back(r);
     }
 
@@ -92,13 +93,13 @@ int main()
       int id_attacker;
       for (int i = 0; i < num_robots; i++)
       {
-        if (robots[i].id != id_goalkeeper)
+        if (robots[i].id() != id_goalkeeper)
         {
-          float dist = dist_point({robots[i].x, robots[i].y}, {ball_x, ball_y});
+          float dist = dist_point({robots[i].x(), robots[i].y()}, {ball_x, ball_y});
           if (dist < dist_min)
           {
             dist_min = dist;
-            id_attacker = robots[i].id;
+            id_attacker = robots[i].id();
           }
         }
       }
@@ -117,11 +118,11 @@ int main()
       int def_robots = 0;
       for (int i = 0; i < num_robots; i++)
       {
-        if (robots[i].id != id_goalkeeper && robots[i].id != id_attacker)
+        if (robots[i].id() != id_goalkeeper && robots[i].id() != id_attacker)
         {
           def_robots++;
           printf("%d D %f %f\n",
-              robots[i].id, -field_width / 2 + defense_radius,
+              robots[i].id(), -field_width / 2 + defense_radius,
               field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y() : 0.0f));
         }
       }
@@ -139,7 +140,7 @@ int main()
 
       for(int i = 0; i < num_robots; i++)
       {
-        if (robots[i].id == id_goalkeeper)
+        if (robots[i].id() == id_goalkeeper)
           continue;
 
         if(c_robots < num_robots_center)
@@ -148,14 +149,14 @@ int main()
           pos_final.normalize();
           pos_final.rotate(-60 + 60 * c_robots);
           printf("%d D %f %f\n",
-                robots[i].id, (pos_final.x() + ball_x) * center_circle_radius, (pos_final.y() + ball_y) * center_circle_radius);
+                robots[i].id(), (pos_final.x() + ball_x) * center_circle_radius, (pos_final.y() + ball_y) * center_circle_radius);
           c_robots++;
         }
         else
         {
           def_robots++;
           printf("%d D %f %f\n",
-              robots[i].id, -field_width / 2 + defense_radius,
+              robots[i].id(), -field_width / 2 + defense_radius,
               field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y() : 0.0f));
         }
       }
@@ -172,25 +173,25 @@ int main()
       int id_receiver;
       for (int i = 0; i < num_robots; i++)
       {
-        if (robots[i].id == id_goalkeeper)
+        if (robots[i].id() == id_goalkeeper)
           continue;
 
         else if(used_robots == 0)
         {
-          id_receiver = robots[i].id;
+          id_receiver = robots[i].id();
           printf("%d A %f %f\n", id_receiver, field_width / 4, 0.0f);
           used_robots++;
         }
         else if(used_robots == 1)
         {
-          printf("%d P %d\n", robots[i].id, id_receiver);
+          printf("%d P %d\n", robots[i].id(), id_receiver);
           used_robots++;
         }
         else
         {
           def_robots++;
           printf("%d D %f %f\n",
-              robots[i].id, -field_width / 2 + defense_radius,
+              robots[i].id(), -field_width / 2 + defense_radius,
               field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y() : 0.0f));
         }
       }
