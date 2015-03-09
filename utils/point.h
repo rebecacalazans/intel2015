@@ -8,14 +8,14 @@ public:
   Point(float x, float y);
   virtual ~Point();
 
-  float magnitude();
+  float magnitude() const;
   void normalize();
   void scale(float s);
   void rotate(float angle);
 
   // TODO (naum-20150407): Criar arquivo para inlines
-  inline float x() { return x_; }
-  inline float y() { return y_; }
+  inline float x() const { return x_; }
+  inline float y() const { return y_; }
 
   Point operator+(Point rhs);
   Point operator-(Point rhs);
