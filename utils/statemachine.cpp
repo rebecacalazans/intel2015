@@ -5,6 +5,30 @@ Transition(State* from, State* to, condition_t condition) :
   from_{from}, to_{to}, condition_{condition}
 {}
 
+const State* Transition::
+from() const
+{
+  return from_;
+}
+
+const State* Transition::
+to() const
+{
+  return to_;
+}
+
+State* Transition::
+to()
+{
+  return to_;
+}
+
+bool Transition::
+condition() const
+{
+  return condition_();
+}
+
 Machine::
 Machine(State* initial_state):
   initial_state_{initial_state},
@@ -27,4 +51,13 @@ reset()
 void Machine::
 step()
 {
+  for (int i = 0; i < transitions_.size(); i++)
+  {
+    if (current_state_ == transitions_[i].from() &&
+        transitions_[i].condition())
+    {
+      current_state_ = transitions_[i].to();
+      break;
+    }
+  }
 }

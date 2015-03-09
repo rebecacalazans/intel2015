@@ -14,6 +14,10 @@ class Transition
 {
 public:
   Transition(State* from, State* to, condition_t condition);
+  const State* from() const;
+  const State* to() const;
+  State* to();
+  bool condition() const;
 protected:
 private:
   State* from_,
