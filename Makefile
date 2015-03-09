@@ -1,5 +1,7 @@
 EXEC = intel.out
-SRCS = main.cpp utils/point.cpp utils/statemachine.cpp
+SRCS = src/main.cpp \
+			 src/utils/point.cpp \
+			 src/utils/statemachine.cpp
 FLAGS = -std=c++11
 
 debug: $(SRCS)
