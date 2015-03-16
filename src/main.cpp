@@ -3,10 +3,10 @@
 #include <vector>
 #include <cmath>
 
-#include "base/robot.h"
-#include "utils/geom.h"
+#include <protocol_version.h>
 
-#define PROTOCOL_VERSION 1
+#include <base/robot.h>
+#include <utils/geom.h>
 
 int main()
 {
@@ -53,10 +53,9 @@ int main()
     std::vector<Robot> robots,
       opponent_robots;
 
-#ifdef DEBUG
-    if (scanf(" %c", &ref_state) == EOF)
+#ifndef NDEBUG
+    if (scanf(" %c %f", &ref_state, &ref_time_left) == EOF)
       break;
-
 #else
     scanf(" %c %f", &ref_state, &ref_time_left);
 #endif
