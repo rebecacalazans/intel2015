@@ -58,13 +58,8 @@ int main()
       break;
 
 #else
-    scanf(" %c", &ref_state);
+    scanf(" %c %f", &ref_state, &ref_time_left);
 #endif
-    if(ref_state == 'k' || ref_state == 'i' || ref_state == 'd' || ref_state == 'y' ||
-        ref_state == 'K' || ref_state == 'I' || ref_state == 'D' || ref_state == 'Y')
-    {
-      scanf(" %f", &ref_time_left);
-    }
     scanf(" %f", &timestamp);
 
     scanf("%f %f %f %f", &ball_x, &ball_y, &ball_vx, &ball_vy);
