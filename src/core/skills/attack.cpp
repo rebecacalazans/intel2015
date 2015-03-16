@@ -6,5 +6,5 @@
 void Attack::
 step()
 {
-  std::cout << robot_->id() << " A " << target_.x() << " " << target_.y() << std::endl;
+  std::cout << robot_->id() << " A " << target_.x() << " " << target_.y() << " " << radius_ << std::endl;
 }
