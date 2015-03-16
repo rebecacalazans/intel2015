@@ -52,7 +52,7 @@ int main()
     std::vector<Robot> robots,
       opponent_robots;
 
-#ifdef DEBUG
+#ifndef NDEBUG
     if (scanf(" %c %f", &ref_state, &timestamp) == EOF)
       break;
 #else

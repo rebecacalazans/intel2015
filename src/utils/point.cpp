@@ -1,6 +1,6 @@
 #include <cmath>
 
-#include "point.h"
+#include <utils/point.h>
 
 Point::
 Point() : x_{0.0f}, y_{0.0f}
