@@ -43,6 +43,7 @@ int main()
   while (true)
   {
     char ref_state;
+    float ref_time_left;
     float timestamp;
     float ball_x, ball_y, ball_vx, ball_vy;
     int id_goalkeeper,
@@ -53,11 +54,19 @@ int main()
       opponent_robots;
 
 #ifdef DEBUG
-    if (scanf(" %c %f", &ref_state, &timestamp) == EOF)
+    if (scanf(" %c", &ref_state) == EOF)
       break;
+
 #else
-    scanf(" %c %f", &ref_state, &timestamp);
+    scanf(" %c", &ref_state);
 #endif
+    if(ref_state == 'k' || ref_state == 'i' || ref_state == 'd' || ref_state == 'y' ||
+        ref_state == 'K' || ref_state == 'I' || ref_state == 'D' || ref_state == 'Y')
+    {
+      scanf(" %f", &ref_time_left);
+    }
+    scanf(" %f", &timestamp);
+
     scanf("%f %f %f %f", &ball_x, &ball_y, &ball_vx, &ball_vy);
     scanf("%d %d", &id_goalkeeper, &num_robots);
 
@@ -84,7 +93,7 @@ int main()
       opponent_robots.push_back(r);
     }
 
-    printf("%d D %f %f\n", id_goalkeeper, -field_width / 2, 0.0f);
+    printf("%d D %f %f %f\n", id_goalkeeper, -field_width / 2, 0.0f, goal_width);
 
     if(ref_state == 'N')
     {
