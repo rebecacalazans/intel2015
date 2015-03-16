@@ -1,8 +1,8 @@
 #ifndef BASE_SKILL_H
 #define BASE_SKILL_H
 
-#include "../../utils/steppable.h"
-#include "../../utils/statemachine.h"
+#include <utils/steppable.h>
+#include <utils/statemachine.h>
 
 class Robot;
 
