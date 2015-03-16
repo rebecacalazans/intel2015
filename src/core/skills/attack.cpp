@@ -1,8 +1,7 @@
 #include <iostream>
 
-#include "../../base/robot.h"
-
-#include "attack.h"
+#include <base/robot.h>
+#include <core/skills/attack.h>
 
 void Attack::
 step()

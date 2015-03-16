@@ -1,8 +1,7 @@
 #include <iostream>
 
-#include "../../base/robot.h"
-
-#include "kick.h"
+#include <base/robot.h>
+#include <core/skills/kick.h>
 
 void Kick::
 step()
