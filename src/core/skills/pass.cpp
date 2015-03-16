@@ -6,5 +6,5 @@
 void Pass::
 step()
 {
-  std::cout << robot_->id() << " P " << radius_ << std::endl;
+  std::cout << robot_->id() << " P " << target_id_ << std::endl;
 }

@@ -10,6 +10,6 @@ public:
 protected:
   int target_id_;
 private:
-}
+};
 
 #endif //CORE_SKILLS_PASS_H
