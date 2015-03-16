@@ -7,6 +7,9 @@ set(INTEL_VERSION_MINOR 1)
 set(INTEL_VERSION_PATCH 0)
 
 set(PROTOCOL_VERSION 1)
+configure_file(
+  "${PROJECT_SOURCE_DIR}/include/protocol_version.h.in"
+  "${PROJECT_SOURCE_DIR}/include/protocol_version.h")
 
 # For YouCompleteMe integration
 set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
