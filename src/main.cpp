@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include <protocol_version.h>
+#include <base/world.h>
 
 #include <base/robot.h>
 #include <utils/geom.h>
@@ -13,32 +14,16 @@ int main()
   // Pre setup
   char protocol[64];
   int version;
+  World world;
+
   scanf("%s %d", protocol, &version);
   if (strcmp(protocol, "ROBOIME_AI_PROTOCOL_VERSION") == 0 && version == PROTOCOL_VERSION)
     printf("COMPATIBLE %d\n", PROTOCOL_VERSION);
   else
     printf("NON_COMPATIBLE %d\n", PROTOCOL_VERSION);
 
-  // Setup
-  float field_width,
-        field_height,
-        goal_width,
-        center_circle_radius,
-        defense_radius,
-        defense_stretch,
-        free_kick_from_defense_dist,
-        penalty_spot_from_field_line_dist,
-        penalty_line_from_spot_dist;
-  scanf("%f %f %f %f %f %f %f %f %f",
-      &field_width,
-      &field_height,
-      &goal_width,
-      &center_circle_radius,
-      &defense_radius,
-      &defense_stretch,
-      &free_kick_from_defense_dist,
-      &penalty_spot_from_field_line_dist,
-      &penalty_line_from_spot_dist);
+  //setup
+  world.load();
 
   while (true)
   {
@@ -87,7 +72,7 @@ int main()
       opponent_robots.push_back(r);
     }
 
-    printf("%d D %f %f %f\n", id_goalkeeper, -field_width / 2, 0.0f, goal_width);
+    printf("%d D %f %f %f\n", id_goalkeeper, -world.field_width() / 2, 0.0f, world.goal_width());
 
     if(ref_state == 'N')
     {
@@ -112,12 +97,12 @@ int main()
 
       // Ponto em que a reta do gol até a bola intercepta a reta de defesa
       Point interPoint;
-      bool isIntersect = line_intersect({-field_width / 2, 0.0f}, {ball_x, ball_y},
-          {-field_width / 2 + defense_radius, field_height / 2}, {-field_width / 2 + defense_radius, -field_height / 2},
+      bool isIntersect = line_intersect({-world.field_width() / 2, 0.0f}, {ball_x, ball_y},
+          {-world.field_width() / 2 + world.defense_radius(), world.field_height() / 2}, {-world.field_width() / 2 + world.defense_radius(), -world.field_height() / 2},
           &interPoint);
 
       // TODO (rebeca - 20150304): Separar defesa defender linha em função
-      float spacing = field_height / (num_robots-1);
+      float spacing = world.field_height() / (num_robots-1);
       int def_robots = 0;
       for (int i = 0; i < num_robots; i++)
       {
@@ -125,8 +110,8 @@ int main()
         {
           def_robots++;
           printf("%d D %f %f\n",
-              robots[i].id(), -field_width / 2 + defense_radius,
-              field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y() : 0.0f));
+              robots[i].id(), -world.field_width() / 2 + world.defense_radius(),
+              world.field_height() / 2 - spacing * def_robots + (isIntersect ? interPoint.y() : 0.0f));
         }
       }
     }
@@ -134,11 +119,11 @@ int main()
     {
       // Ponto em que a reta do gol até a bola intercepta a reta de defesa
       Point interPoint;
-      bool isIntersect = line_intersect({-field_width / 2, 0.0f}, {ball_x, ball_y},
-          {-field_width / 2 + defense_radius, field_height / 2}, {-field_width / 2 + defense_radius, -field_height / 2},
+      bool isIntersect = line_intersect({-world.field_width() / 2, 0.0f}, {ball_x, ball_y},
+          {-world.field_width() / 2 + world.defense_radius(), world.field_height() / 2}, {-world.field_width() / 2 + world.defense_radius(), -world.field_height() / 2},
           &interPoint);
       int num_robots_center = 3;
-      float spacing = field_height / (num_robots-num_robots_center);
+      float spacing = world.field_height() / (num_robots-num_robots_center);
       int c_robots = 0, def_robots = 0;
 
       for(int i = 0; i < num_robots; i++)
@@ -148,29 +133,29 @@ int main()
 
         if(c_robots < num_robots_center)
         {
-          Point pos_final = {-field_width / 2 - ball_x, 0.0f - ball_y};
+          Point pos_final = {-world.field_width() / 2 - ball_x, 0.0f - ball_y};
           pos_final.normalize();
           pos_final.rotate(-60 + 60 * c_robots);
           printf("%d D %f %f\n",
-                robots[i].id(), (pos_final.x() + ball_x) * center_circle_radius, (pos_final.y() + ball_y) * center_circle_radius);
+                robots[i].id(), (pos_final.x() + ball_x) * world.center_circle_radius(), (pos_final.y() + ball_y) * world.center_circle_radius());
           c_robots++;
         }
         else
         {
           def_robots++;
           printf("%d D %f %f\n",
-              robots[i].id(), -field_width / 2 + defense_radius,
-              field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y() : 0.0f));
+              robots[i].id(), -world.field_width() / 2 + world.defense_radius(),
+              world.field_height() / 2 - spacing * def_robots + (isIntersect ? interPoint.y() : 0.0f));
         }
       }
     }
     else if(ref_state == 'i')
     {
       Point interPoint;
-      bool isIntersect = line_intersect({-field_width / 2, 0.0f}, {ball_x, ball_y},
-          {-field_width / 2 + defense_radius, field_height / 2}, {-field_width / 2 + defense_radius, -field_height / 2},
+      bool isIntersect = line_intersect({-world.field_width() / 2, 0.0f}, {ball_x, ball_y},
+          {-world.field_width() / 2 + world.defense_radius(), world.field_height() / 2}, {-world.field_width() / 2 + world.defense_radius(), -world.field_height() / 2},
           &interPoint);
-      float spacing = field_height / (num_robots - 2);
+      float spacing = world.field_height() / (num_robots - 2);
       int def_robots = 0;
       int used_robots = 0;
       int id_receiver;
@@ -182,7 +167,7 @@ int main()
         else if(used_robots == 0)
         {
           id_receiver = robots[i].id();
-          printf("%d A %f %f\n", id_receiver, field_width / 4, 0.0f);
+          printf("%d A %f %f\n", id_receiver, world.field_width() / 4, 0.0f);
           used_robots++;
         }
         else if(used_robots == 1)
@@ -194,8 +179,8 @@ int main()
         {
           def_robots++;
           printf("%d D %f %f\n",
-              robots[i].id(), -field_width / 2 + defense_radius,
-              field_height / 2 - spacing * def_robots + (isIntersect ? interPoint.y() : 0.0f));
+              robots[i].id(), -world.field_width() / 2 + world.defense_radius(),
+              world.field_height() / 2 - spacing * def_robots + (isIntersect ? interPoint.y() : 0.0f));
         }
       }
     }
