@@ -14,15 +14,15 @@ public:
   void rotate(float angle);
 
   // TODO (naum-20150407): Criar arquivo para inlines
-  inline float x() { return x_; }
-  inline float y() { return y_; }
+  inline float x() const { return x_; }
+  inline float y() const { return y_; }
 
   Point operator+(Point rhs);
   Point operator-(Point rhs);
 
 protected:
-private:
   float x_, y_;
+private:
 };
 
 float dist_point(Point a, Point b);
