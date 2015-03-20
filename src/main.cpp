@@ -72,6 +72,9 @@ int main()
       opponent_robots.push_back(r);
     }
 
+    // 
+    world.ball().setup(ball_x, ball_y, ball_vx, ball_vy);
+
     printf("%d D %f %f %f\n", id_goalkeeper, -world.field_width() / 2, 0.0f, world.goal_width());
 
     if(ref_state == 'N')
