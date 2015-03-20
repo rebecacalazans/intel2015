@@ -1,7 +1,11 @@
 #ifndef BASE_ROBOT_H
 #define BASE_ROBOT_H
 
-class Robot
+#include <utils/point.h>
+#include <utils/hasvelocity.h>
+#include <utils/hasorientation.h>
+
+class Robot : public Point, public HasVelocity, public HasOrientation
 {
 public:
   Robot() {}
@@ -14,17 +18,9 @@ public:
   }
 
   inline int id() const { return id_; }
-  inline float x() const { return x_; }
-  inline float y() const { return y_; }
-  inline float w() const { return w_; }
-  inline float vx() const { return vx_; }
-  inline float vy() const { return vy_; }
-  inline float vw() const { return vw_; }
 protected:
 private:
   int id_;
-  float x_, y_, w_,
-        vx_, vy_, vw_;
 };
 
 #endif //BASE_ROBOT_H
